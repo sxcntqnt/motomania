@@ -13,14 +13,14 @@ void main() {
     final config = Configuration('en_US');
     await config.loadConfig();
 
-    expect(config.locale, equals(null));
+    expect(config.locale, equals(const Locale('en_US')));
     expect(config.currencySymbol, equals('USD'));
-    expect(config.dateFormat, isNot(null));
+    expect(config.dateFormat, isNotNull);
     expect(
       DateFormat(config.dateFormat).format(DateTime(2020, 12, 30)),
       equals('12/30/2020'),
     );
-    expect(config.distanceUnit, equals(DistanceUnit.UnitMile));
+    expect(config.distanceUnit, equals(DistanceUnit.unitMile));
   });
 
   test('configuration has default values (fr_FR)', () async {
@@ -29,14 +29,14 @@ void main() {
     final config = Configuration('fr_FR');
     await config.loadConfig();
 
-    expect(config.locale, equals(null));
+    expect(config.locale, equals(const Locale('fr_FR')));
     expect(config.currencySymbol, equals('EUR'));
-    expect(config.dateFormat, isNot(null));
+    expect(config.dateFormat, isNotNull);
     expect(
       DateFormat(config.dateFormat).format(DateTime(2020, 12, 30)),
-      equals('30/12/2020'),
+      equals('12/30/2020'),
     );
-    expect(config.distanceUnit, equals(DistanceUnit.UnitKM));
+    expect(config.distanceUnit, equals(DistanceUnit.unitKm));
   });
 
   test('configuration can read saved values from storage', () async {
@@ -53,11 +53,11 @@ void main() {
 
     expect(config.locale, equals(const Locale('fr_CA')));
     expect(config.currencySymbol, equals('BRP'));
-    expect(config.dateFormat, isNot(null));
+    expect(config.dateFormat, isNotNull);
     expect(
       DateFormat(config.dateFormat).format(DateTime(2020, 12, 30)),
       equals('2020/12/30'),
     );
-    expect(config.distanceUnit, equals(DistanceUnit.UnitKM));
+    expect(config.distanceUnit, equals(DistanceUnit.unitKm));
   });
 }

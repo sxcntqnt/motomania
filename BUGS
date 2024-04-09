@@ -1,0 +1,24 @@
+# TODO
+
+- Improve the resilience of the JSON parsers (catch errors and return a null object)
+- Improve the reliabiity of the storage layer.
+- Automated tests.
+- For many pages, the build method is called multiple times. Store images/calculated values to avoid processing many times.
+
+- Test.
+- Publish release.
+
+## Nullable Dart TODO
+
+- Unit tests
+- Garage page
+- Theme
+- Import garage
+- Export garage
+- Settings page
+- Add motorcycle
+- Moto page
+- Edit motorcycle
+- Add task
+- Edit task
+- Import tasks

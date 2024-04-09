@@ -10,16 +10,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Sensible defaults (based on system locale) are returned if there is no
 // saved value.
 class Configuration {
-  static const _DEFAULT_CURRENCY_SYMBOL = 'USD';
-  static const _PROP_NAME_LOCALE = 'locale';
-  static const _PROP_NAME_CURRENCY = 'currency';
-  static const _PROP_NAME_DATE_FORMAT = 'date_format';
-  static const _PROP_NAME_DISTANCE_UNIT = 'distance_unit';
-  static const _PROP_VALUE_DISTANCE_UNIT_KM = 'km';
-  static const _PROP_VALUE_DISTANCE_UNIT_MILE = 'mile';
-  static const _PROP_NAME_NOTIFICATIONS = 'notifications';
+  static const defaultCurrencySymbol = 'USD';
+  static const propNameLocale = 'locale';
+  static const propNameCurrency = 'currency';
+  static const propNameDateFormat = 'date_format';
+  static const propNameDistanceUnit = 'distance_unit';
+  static const propValueDistanceUnitKm = 'km';
+  static const propValueDistanceUnitMile = 'mile';
+  static const propNameNotifications = 'notifications';
 
-  // Made available to the application here, but not store in the config.
+  // Made available to the application here, but not stored in the config.
   PackageInfo? packageInfo;
 
   final Locale _systemLocale;
@@ -34,7 +34,7 @@ class Configuration {
 
   Configuration(String systemLocale)
       : _systemLocale = Locale(systemLocale),
-        _currencySymbol = _DEFAULT_CURRENCY_SYMBOL,
+        _currencySymbol = defaultCurrencySymbol,
         _notifications = false,
         _locale = Locale(systemLocale);
 
@@ -44,7 +44,7 @@ class Configuration {
     assert(_prefs != null);
     _currencySymbol = symbol;
 
-    _prefs?.setString(_PROP_NAME_CURRENCY, symbol);
+    _prefs?.setString(propNameCurrency, symbol);
   }
 
   String get dateFormat {
@@ -54,7 +54,7 @@ class Configuration {
       _dateFormat = (localeDateFormat != null &&
               AppLocalSupport.supportedDateFormats.contains(localeDateFormat))
           ? localeDateFormat
-          : 'y/M/d';
+          : AppLocalSupport.supportedDateFormats.first;
     }
     return _dateFormat!;
   }
@@ -63,7 +63,7 @@ class Configuration {
     assert(_prefs != null);
     _dateFormat = format;
 
-    _prefs?.setString(_PROP_NAME_DATE_FORMAT, format);
+    _prefs?.setString(propNameDateFormat, format);
   }
 
   DistanceUnit get distanceUnit {
@@ -91,10 +91,10 @@ class Configuration {
     _distanceUnit = unit;
 
     _prefs?.setString(
-        _PROP_NAME_DISTANCE_UNIT,
+        propNameDistanceUnit,
         unit == DistanceUnit.UnitMile
-            ? _PROP_VALUE_DISTANCE_UNIT_MILE
-            : _PROP_VALUE_DISTANCE_UNIT_KM);
+            ? propValueDistanceUnitMile
+            : propValueDistanceUnitKm);
   }
 
   Locale get locale => _locale;
@@ -102,7 +102,7 @@ class Configuration {
     assert(_prefs != null);
     _locale = locale;
 
-    _prefs?.setString(_PROP_NAME_LOCALE, locale.languageCode);
+    _prefs?.setString(propNameLocale, locale.languageCode);
   }
 
   bool get notifications {
@@ -112,28 +112,32 @@ class Configuration {
   set notifications(bool enabled) {
     _notifications = enabled;
 
-    _prefs?.setBool(_PROP_NAME_NOTIFICATIONS, _notifications);
+    _prefs?.setBool(propNameNotifications, _notifications);
   }
 
   Future<void> loadConfig() async {
     _prefs = await SharedPreferences.getInstance();
-    final localeStr = _prefs?.getString(_PROP_NAME_LOCALE);
-    _locale = Locale(localeStr ?? 'en');
+    final localeStr = _prefs?.getString(propNameLocale);
+    _locale = localeStr != null && localeStr.isNotEmpty
+        ? Locale(localeStr)
+        : _systemLocale;
 
-    final distance = _prefs?.getString(_PROP_NAME_DISTANCE_UNIT);
+    final distance = _prefs?.getString(propNameDistanceUnit);
     if (distance != null) {
-      if (distance == _PROP_VALUE_DISTANCE_UNIT_KM) {
+      if (distance == propValueDistanceUnitKm) {
         _distanceUnit = DistanceUnit.UnitKM;
-      } else if (distance == _PROP_VALUE_DISTANCE_UNIT_MILE) {
+      } else if (distance == propValueDistanceUnitMile) {
         _distanceUnit = DistanceUnit.UnitMile;
       }
     }
 
-    _currencySymbol = _prefs?.getString(_PROP_NAME_CURRENCY) ??
+    _currencySymbol = _prefs?.getString(propNameCurrency) ??
         NumberFormat.currency(locale: _systemLocale.languageCode)
             .currencyName ??
-        _DEFAULT_CURRENCY_SYMBOL;
-    _dateFormat = _prefs?.getString(_PROP_NAME_DATE_FORMAT) ?? 'YY/MM/DD';
-    _notifications = _prefs?.getBool(_PROP_NAME_NOTIFICATIONS) ?? true;
+        defaultCurrencySymbol;
+    _dateFormat = _prefs?.getString(propNameDateFormat) ??
+        AppLocalSupport.supportedDateFormats
+            .first; // FIXME: Get the default for the locale
+    _notifications = _prefs?.getBool(propNameNotifications) ?? true;
   }
 }

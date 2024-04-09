@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:moto_mecanico/locale/formats.dart';
 
 enum DistanceUnit {
-  UnitKM,
-  UnitMile,
+  unitKm,
+  unitMile,
 }
 
 class Distance implements Comparable<dynamic> {
-  static const double KM_TO_MILES = 0.621371;
-  const Distance(this.distance, [this.unit = DistanceUnit.UnitKM]);
+  static const double kmToMiles = 0.621371;
+  const Distance(this.distance, [this.unit = DistanceUnit.unitKm]);
 
   final int? distance;
   final DistanceUnit unit;
@@ -18,10 +18,10 @@ class Distance implements Comparable<dynamic> {
   Distance toUnit(DistanceUnit newUnit) {
     var newDistance = distance;
     if (distance != null && unit != newUnit) {
-      if (newUnit == DistanceUnit.UnitKM) {
-        newDistance = (distance! / KM_TO_MILES).round();
+      if (newUnit == DistanceUnit.unitKm) {
+        newDistance = (distance! / kmToMiles).round();
       } else {
-        newDistance = (distance! * KM_TO_MILES).round();
+        newDistance = (distance! * kmToMiles).round();
       }
     }
     return Distance(newDistance, newUnit);
@@ -84,12 +84,12 @@ class Distance implements Comparable<dynamic> {
   }
 
   @override
-  int get hashCode => toUnit(DistanceUnit.UnitKM).distance ?? 0;
+  int get hashCode => toUnit(DistanceUnit.unitKm).distance ?? 0;
 
   @override
   int compareTo(dynamic other) {
     assert(other != null);
-    if (!(other is Distance)) {
+    if (other is! Distance) {
       return 0;
     }
 
@@ -105,16 +105,16 @@ class Distance implements Comparable<dynamic> {
   factory Distance.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('distance') && json['unit'] != null) {
       return Distance(json['distance'],
-          json['unit'] == 'mile' ? DistanceUnit.UnitMile : DistanceUnit.UnitKM);
+          json['unit'] == 'mile' ? DistanceUnit.unitMile : DistanceUnit.unitKm);
     }
     debugPrint('Failed to parse distance from JSON. Missing fields.');
-    return Distance(null);
+    return const Distance(null);
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['distance'] = distance;
-    data['unit'] = unit == DistanceUnit.UnitMile ? 'mile' : 'km';
+    data['unit'] = unit == DistanceUnit.unitMile ? 'mile' : 'km';
     return data;
   }
 }

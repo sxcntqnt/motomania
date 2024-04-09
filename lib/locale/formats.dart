@@ -17,13 +17,13 @@ class AppLocalSupport {
   ];
 
   static const Map<DistanceUnit, String> distanceUnits = {
-    DistanceUnit.UnitKM: 'km',
-    DistanceUnit.UnitMile: 'miles'
+    DistanceUnit.unitKm: 'km',
+    DistanceUnit.unitMile: 'miles'
   };
 
   static const Map<DistanceUnit, String> distanceUnitsCompact = {
-    DistanceUnit.UnitKM: 'km',
-    DistanceUnit.UnitMile: 'mi'
+    DistanceUnit.unitKm: 'km',
+    DistanceUnit.unitMile: 'mi'
   };
 
   // Currency list from openexchangerates.org

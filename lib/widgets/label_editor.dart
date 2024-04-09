@@ -7,41 +7,21 @@ import 'package:moto_mecanico/themes.dart';
 import 'package:provider/provider.dart';
 
 class LabelEditor extends StatefulWidget {
-  LabelEditor({Key? key}) : super(key: key);
+  const LabelEditor({super.key});
 
   @override
-  State<StatefulWidget> createState() => _LabelEditorState();
+  State<LabelEditor> createState() => _LabelEditorState();
 }
 
 class _LabelEditorState extends State<LabelEditor> {
   _LabelEditorState();
 
   final _formKey = GlobalKey<FormState>();
-  late final List<String> _initialHints;
-  late final TextStyle _hintFont;
-  late final TextStyle _textFont;
 
   List<Color> _labelColors = <Color>[];
 
   @override
   Widget build(BuildContext context) {
-    _initialHints = [
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_1,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_2,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_3,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_4,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_5,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_6,
-      AppLocalizations.of(context)!.label_editor_name_initial_hint_7
-    ];
-
-    _hintFont = Theme.of(context).textTheme.propEditorHint.copyWith(
-          color: Colors.white70,
-          fontStyle: FontStyle.italic,
-          fontSize: 18,
-        );
-    _textFont = Theme.of(context).textTheme.labelName;
-
     return _buildLabelList();
   }
 
@@ -52,6 +32,15 @@ class _LabelEditorState extends State<LabelEditor> {
   Widget _buildLabelList() {
     final labels = Provider.of<LabelsModel>(context, listen: false).labels;
     final firstEdit = labels.values.every((element) => element.name.isEmpty);
+    final List<String> initialHints = [
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_1,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_2,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_3,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_4,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_5,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_6,
+      AppLocalizations.of(context)!.label_editor_name_initial_hint_7
+    ];
 
     var i = 0;
     return Form(
@@ -70,14 +59,14 @@ class _LabelEditorState extends State<LabelEditor> {
               _labelColors.add(label.value.color);
             }
             final widget = Padding(
-              padding: EdgeInsets.only(left: 15, right: 5),
+              padding: const EdgeInsets.only(left: 15, right: 5),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerLeft,
                       height: 45,
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                         color: _labelColors[index],
                         border: Border.all(
@@ -89,7 +78,7 @@ class _LabelEditorState extends State<LabelEditor> {
                       ),
                       child: _getTextField(
                         label.value,
-                        i,
+                        initialHints[i],
                         firstEdit,
                         (name) {
                           if (name != null) {
@@ -125,18 +114,22 @@ class _LabelEditorState extends State<LabelEditor> {
     );
   }
 
-  Widget _getTextField(
-      Label label, int i, bool firstEdit, Function(String?) onSaved) {
+  Widget _getTextField(Label label, String initialHint, bool firstEdit,
+      Function(String?) onSaved) {
     return TextFormField(
       cursorColor: Colors.white,
       decoration: InputDecoration.collapsed(
-        hintText: firstEdit ? _initialHints[i] : '',
-        hintStyle: _hintFont,
+        hintText: firstEdit ? initialHint : '',
+        hintStyle: Theme.of(context).textTheme.propEditorHint.copyWith(
+              color: Colors.white70,
+              fontStyle: FontStyle.italic,
+              fontSize: 18,
+            ),
       ),
       maxLines: 1,
       inputFormatters: [LengthLimitingTextInputFormatter(20)],
       initialValue: label.name,
-      style: _textFont,
+      style: Theme.of(context).textTheme.labelName,
       onSaved: onSaved,
     );
   }
