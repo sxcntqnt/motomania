@@ -37,6 +37,7 @@ class RnrColors {
 extension RnrThemes on ThemeData {
   ThemeData get RnrDarkTheme {
     return ThemeData(
+      useMaterial3: false,
       brightness: Brightness.dark,
       primaryColor: RnrColors.blue[800],
       primaryColorLight: RnrColors.blue,
@@ -48,11 +49,12 @@ extension RnrThemes on ThemeData {
           iconTheme: IconThemeData(
             color: Colors.grey[200],
           ),
+          backgroundColor: RnrColors.blue[800],
           toolbarTextStyle:
               textTheme.apply(bodyColor: Colors.grey[200]).bodyMedium,
           titleTextStyle:
               textTheme.apply(bodyColor: Colors.grey[200]).titleLarge),
-      dialogTheme: DialogTheme(
+      dialogTheme: const DialogTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(20.0),
@@ -62,7 +64,7 @@ extension RnrThemes on ThemeData {
       popupMenuTheme: PopupMenuThemeData(color: Colors.blueGrey[900]),
       tooltipTheme: TooltipThemeData(
           decoration: BoxDecoration(color: RnrColors.blue[100])),
-      tabBarTheme: TabBarTheme(
+      tabBarTheme: const TabBarTheme(
         unselectedLabelColor: Colors.white70,
         labelColor: RnrColors.orange,
         labelPadding: EdgeInsets.only(bottom: 5),
@@ -79,7 +81,8 @@ extension RnrThemes on ThemeData {
         selectionHandleColor: RnrColors.orange,
       ),
       colorScheme: ColorScheme.fromSwatch(primarySwatch: RnrColors.blue)
-          .copyWith(secondary: RnrColors.orange),
+          .copyWith(secondary: RnrColors.orange, brightness: Brightness.dark),
+      /*
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith<Color?>(
             (Set<MaterialState> states) {
@@ -125,7 +128,7 @@ extension RnrThemes on ThemeData {
           }
           return null;
         }),
-      ),
+      ),*/
     );
   }
 }

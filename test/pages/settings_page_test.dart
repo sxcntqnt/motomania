@@ -14,7 +14,7 @@ void main() async {
   testWidgets('settings page load with default config',
       (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
-    final config = Configuration('en_US');
+    final config = Configuration('en');
     await config.loadConfig();
 
     final app = ConfigWidget(
@@ -22,7 +22,7 @@ void main() async {
       child: ChangeNotifierProvider(
         create: (context) => LabelsModel(),
         lazy: false,
-        child: MaterialApp(
+        child: const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: SettingsPage(),

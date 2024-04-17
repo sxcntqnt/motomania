@@ -79,7 +79,7 @@ class Distance implements Comparable<dynamic> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return other is Distance && other.toUnit(unit).distance == distance;
   }
 

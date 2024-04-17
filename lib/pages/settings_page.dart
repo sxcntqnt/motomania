@@ -3,8 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:moto_mecanico/configuration.dart';
 import 'package:moto_mecanico/locale/formats.dart';
-import 'package:moto_mecanico/main.dart';
 import 'package:moto_mecanico/models/distance.dart';
+import 'package:moto_mecanico/moto_log_app.dart';
 import 'package:moto_mecanico/widgets/config_widget.dart';
 import 'package:moto_mecanico/widgets/dissmiss_keyboard_ontap.dart';
 import 'package:moto_mecanico/widgets/label_editor.dart';
@@ -12,7 +12,7 @@ import 'package:moto_mecanico/widgets/property_editor_card.dart';
 import 'package:moto_mecanico/widgets/property_editor_row.dart';
 
 class SettingsPage extends StatefulWidget {
-  SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _SettingsPageState();
@@ -56,8 +56,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   PropertyEditorCard(
                     title: AppLocalizations.of(context)!
                         .settings_page_labels_header,
-                    children: [
-                      const SizedBox(height: 10),
+                    children: const [
+                      SizedBox(height: 10),
                       LabelEditor(),
                     ],
                   ),
@@ -76,11 +76,11 @@ class _SettingsPageState extends State<SettingsPage> {
       inputField: Align(
         alignment: Alignment.centerRight,
         child: DropdownButton<String>(
-          value: _getLocale(config),
+          value: _getLanguageCode(config),
           items: AppLocalSupport.supportedLanguages.keys.map((key) {
             return DropdownMenuItem<String>(
-              child: Text(AppLocalSupport.supportedLanguages[key]!),
               value: key,
+              child: Text(AppLocalSupport.supportedLanguages[key]!),
             );
           }).toList(),
           onChanged: (newLocale) {
@@ -94,19 +94,27 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _getDateRow(Configuration config) {
+    final date = DateTime(2020, 1, 31);
+    var dateFormats = AppLocalSupport.supportedDateFormats;
+    if (!dateFormats.contains(config.dateFormat)) {
+      if (config.dateFormat.isNotEmpty) {
+        dateFormats.add(config.dateFormat);
+      } else {
+        config.dateFormat = dateFormats.first;
+      }
+    }
     return PropertyEditorRow(
       name: AppLocalizations.of(context)!.settings_page_date_format_prop_name,
       inputField: Align(
         alignment: Alignment.centerRight,
         child: DropdownButton<String>(
           value: config.dateFormat,
-          items: AppLocalSupport.supportedDateFormats.map((item) {
-            final date = DateTime(2020, 1, 31);
+          items: dateFormats.map((item) {
             final widget = DropdownMenuItem<String>(
+                value: item,
                 child: Text(
                   DateFormat(item).format(date),
-                ),
-                value: item);
+                ));
             return widget;
           }).toList(),
           onChanged: (newFormat) {
@@ -129,10 +137,10 @@ class _SettingsPageState extends State<SettingsPage> {
           items: AppLocalSupport.currencySymbols.keys.map((item) {
             // FIXME: The list is long. A searchable dropdown would be very useful here.
             return DropdownMenuItem<String>(
+              value: item,
               child: Text(
                 item,
               ),
-              value: item,
             );
           }).toList(),
           onChanged: (newCurrency) {
@@ -156,13 +164,13 @@ class _SettingsPageState extends State<SettingsPage> {
           value: config.distanceUnit,
           items: [
             DropdownMenuItem(
-              value: DistanceUnit.UnitKM,
-              child: Text(AppLocalSupport.distanceUnits[DistanceUnit.UnitKM]!),
+              value: DistanceUnit.unitKm,
+              child: Text(AppLocalSupport.distanceUnits[DistanceUnit.unitKm]!),
             ),
             DropdownMenuItem(
-              value: DistanceUnit.UnitMile,
+              value: DistanceUnit.unitMile,
               child:
-                  Text(AppLocalSupport.distanceUnits[DistanceUnit.UnitMile]!),
+                  Text(AppLocalSupport.distanceUnits[DistanceUnit.unitMile]!),
             ),
           ],
           onChanged: (newUnit) {
@@ -175,15 +183,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  String _getLocale(Configuration config) {
+  String _getLanguageCode(Configuration config) {
     return config.locale.languageCode;
-    /*
-     FIXME: Need to know if the locale has been configured or not
-     ??
-              Localizations.localeOf(context)
-                  .languageCode
-                  .split(RegExp(r'[_-]'))[0]
-    */
   }
 
 /*
