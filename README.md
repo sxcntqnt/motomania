@@ -1,6 +1,6 @@
 # Moto Mecanico
 
-<img alt="Moto Mecanico Logo" src="assets/images/moto_mecanico.png" align="left" height="248" width="248">
+<img alt="Moto Mecanico Logo" src="mania/assets/images/moto_mecanico.png" align="left" height="248" width="248">
 
 [![CI Build](https://github.com/ramblenride/moto-mecanico/actions/workflows/ci_build.yml/badge.svg)](https://github.com/ramblenride/moto-mecanico/actions?query=workflow%3A%22CI+Build%22)
 
